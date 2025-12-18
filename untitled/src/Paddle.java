@@ -67,7 +67,7 @@ public class Paddle implements Sprite, Collidable {
         return this.rectangle;
     }
 
-    public Velocity hit(Point collisionPoint, Velocity currentVelocity) {
+    public Velocity hit(Ball hitter,Point collisionPoint, Velocity currentVelocity) {
 
         int angle=this.parts_changes[getCollisedRegionIndex(collisionPoint)];
 

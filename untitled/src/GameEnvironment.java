@@ -29,6 +29,9 @@ public class GameEnvironment {
     public void addCollidable(Collidable c){
         this.collidables.add(c);
     }
+    public void removeCollidable(Collidable c){
+        this.collidables.remove(c);
+    }
 
 
     // Assume an object moving from line.start() to line.end().

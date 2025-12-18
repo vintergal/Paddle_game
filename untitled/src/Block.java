@@ -1,9 +1,15 @@
 import biuoop.DrawSurface;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Block implements Collidable,Sprite {
-    private Rectangle collisionRectangle;
+
+public class Block implements Collidable,Sprite, HitNotifier {
+
+    private List<HitListener> hitListeners;
+
+    private final Rectangle collisionRectangle;
     private Color color;
     public Block(double startX,double startY,double width, double height){
         this(startX,startY,width,height,Color.red);
@@ -11,9 +17,21 @@ public class Block implements Collidable,Sprite {
     public Block(double startX, double startY, double width, double height, Color color){
         this.collisionRectangle= new Rectangle(new Point(startX,startY),width,height);
         this.color=color;
+        this.hitListeners=new ArrayList<>();
 
     }
 
+
+    // ... implementation
+
+    private void notifyHit(Ball hitter) {
+        // Make a copy of the hitListeners before iterating over them.
+        List<HitListener> listeners = new ArrayList<HitListener>(this.hitListeners);
+        // Notify all listeners about a hit event:
+        for (HitListener hl : listeners) {
+            hl.hitEvent(this, hitter);
+        }
+    }
 
     public Block(Rectangle rect){
         this.collisionRectangle=rect.copy();
@@ -47,7 +65,7 @@ public class Block implements Collidable,Sprite {
     }
 
     @Override
-    public Velocity hit(Point collisionPoint, Velocity currentVelocity) {
+    public Velocity hit(Ball hitter, Point collisionPoint, Velocity currentVelocity) {
 
         Velocity new_velocity=currentVelocity;
         if (this.collisionRectangle.isPointOnHorizontalEdge(collisionPoint)){
@@ -57,8 +75,24 @@ public class Block implements Collidable,Sprite {
         if (this.collisionRectangle.isPointOnVerticalEdge(collisionPoint)){
             new_velocity= new_velocity.getInvertedX();
         }
+        this.notifyHit(hitter);
+
         return new_velocity;
     }
 
+    public void removeFromGame(Game game) {
+        game.removeSprite(this);
+        game.removeCollidable(this);
+    }
 
+
+    @Override
+    public void addHitListener(HitListener hl) {
+        this.hitListeners.add(hl);
+    }
+
+    @Override
+    public void removeHitListener(HitListener hl) {
+        this.hitListeners.remove(hl);
+    }
 }

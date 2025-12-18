@@ -15,6 +15,12 @@ public class Game {
     private GameEnvironment environment;
     private GUI gui;
     private Sleeper sleeper;
+    private BlockRemover block_remover;
+    private Counter remaining_blocks;
+    private BallRemover balls_remover;
+    private Counter remaining_balls;
+    private ScoreTrackingListener scoreTrackingListener;
+    private Counter score;
 
     public static Game getInstance() {
         if (Game.instance==null){
@@ -24,6 +30,7 @@ public class Game {
     }
 
     private Game(){
+
     }
 
 
@@ -43,6 +50,13 @@ public class Game {
         this.gui=new GUI("project2", WIDTH, HEIGHT);
         this.sleeper=new Sleeper();
 
+        this.remaining_blocks=new Counter(0);
+        this.block_remover=new BlockRemover(this,remaining_blocks);
+        this.remaining_balls=new Counter(0);
+        this.balls_remover=new BallRemover(this,remaining_balls);
+        this.score=new Counter(0);
+        this.scoreTrackingListener=new ScoreTrackingListener(this,this.score);
+
         Ball ball1 = new Ball(WIDTH-400,HEIGHT-100,5,Color.black);
         ball1.setVelocity(0,1);
         Ball ball2 = new Ball(WIDTH-350,HEIGHT-100,5,Color.black);
@@ -59,13 +73,20 @@ public class Game {
         boundRight.addToGame(this);
         boundTop.addToGame(this);
         boundBottom.addToGame(this);
-        this.addBlocksOfPattern();
+        boundBottom.addHitListener(this.balls_remover);
+        ScoreIndicator si=new ScoreIndicator(WIDTH,10,score);
+        si.addToGame(this);
 
+
+
+
+        this.addBlocksOfPattern();
 
         paddle.addToGame(this);
 
         ball1.addToGame(this);
         ball2.addToGame(this);
+        this.remaining_balls.increase(2);
 
 
     }
@@ -86,14 +107,19 @@ public class Game {
                 int startY=startFromAbove+row*(block_height+spacey);
                 Block block = new Block(startX,startY,block_width,block_height,Color.blue);
                 block.addToGame(this);
+                block.addHitListener(block_remover);
+                block.addHitListener(scoreTrackingListener);
+
+                this.remaining_blocks.increase(1);
             }
         }
+
     }
 
 
         // Run the game -- start the animation loop.
     public void run() {
-        int framesPerSecond = 60;
+        int framesPerSecond = 600;
         int millisecondsPerFrame = 1000 / framesPerSecond;
         while (true) {
             long startTime = System.currentTimeMillis(); // timing
@@ -109,6 +135,23 @@ public class Game {
             if (milliSecondLeftToSleep > 0) {
                 sleeper.sleepFor(milliSecondLeftToSleep);
             }
+
+            if (remaining_blocks.getValue()==0){
+                //gui.close();
+                score.increase(100);
+                return;
+            }
+            if (remaining_balls.getValue()==0){
+                //gui.close();
+                return;
+            }
         }
+    }
+
+    public void removeCollidable(Collidable c) {
+        this.environment.removeCollidable(c);
+    }
+    public void removeSprite(Sprite s){
+        this.sprites.removeSprite(s);
     }
 }

@@ -1,8 +1,13 @@
 import biuoop.DrawSurface;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ball implements Sprite {
     // constructor
     private java.awt.Color color;
+    private List<HitListener> hitListeners;
+
     private double r;
     private Point center;
 
@@ -15,6 +20,7 @@ public class Ball implements Sprite {
         this.color=color;
         this.setVelocity(0,0);
         this.game_environment=GameEnvironment.getInstance();
+        this.hitListeners=new ArrayList<>();
     }
     public Ball(Point center, int r, java.awt.Color color,GameEnvironment game_environment)
     {
@@ -68,11 +74,16 @@ public class Ball implements Sprite {
         CollisionInfo collision_info=this.game_environment.getClosestCollision(trajectory);
         if  (collision_info!=null) {
             Point collisionPoint=collision_info.collisionPoint();
-            Velocity returnVelocity=collision_info.collisionObject().hit(collisionPoint,this.velocity);
+            Velocity returnVelocity=collision_info.collisionObject().hit(this,collisionPoint,this.velocity);
             this.setVelocity(returnVelocity);
         }else {
             this.center = this.velocity.applyToPoint(this.center);
         }
     }
+
+    public void removeFromGame(Game game) {
+        game.removeSprite(this);
+    }
+
 
 }
