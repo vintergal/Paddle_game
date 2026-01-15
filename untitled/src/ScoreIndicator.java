@@ -33,7 +33,7 @@ public class ScoreIndicator implements Sprite {
     }
 
     @Override
-    public void addToGame(Game g) {
+    public void addToGame(GameLevel g) {
         g.addSprite(this);
     }
 

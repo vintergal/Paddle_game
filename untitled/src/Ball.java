@@ -52,7 +52,7 @@ public class Ball implements Sprite {
     }
 
     @Override
-    public void addToGame(Game g) {
+    public void addToGame(GameLevel g) {
         g.addSprite(this);
     }
 
@@ -81,8 +81,8 @@ public class Ball implements Sprite {
         }
     }
 
-    public void removeFromGame(Game game) {
-        game.removeSprite(this);
+    public void removeFromGame(GameLevel gameLevel) {
+        gameLevel.removeSprite(this);
     }
 
 

@@ -6,5 +6,5 @@ public interface Sprite {
     // notify the sprite that time has passed
     void timePassed();
 
-    void addToGame(Game g);
+    void addToGame(GameLevel g);
 }

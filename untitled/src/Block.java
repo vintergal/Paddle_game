@@ -54,7 +54,7 @@ public class Block implements Collidable,Sprite, HitNotifier {
     }
 
     @Override
-    public void addToGame(Game g) {
+    public void addToGame(GameLevel g) {
         g.addCollidable(this);
         g.addSprite(this);
     }
@@ -80,9 +80,9 @@ public class Block implements Collidable,Sprite, HitNotifier {
         return new_velocity;
     }
 
-    public void removeFromGame(Game game) {
-        game.removeSprite(this);
-        game.removeCollidable(this);
+    public void removeFromGame(GameLevel gameLevel) {
+        gameLevel.removeSprite(this);
+        gameLevel.removeCollidable(this);
     }
 
 

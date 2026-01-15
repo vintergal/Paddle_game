@@ -1,9 +1,9 @@
 public class ScoreTrackingListener implements HitListener {
-    private Game game;
+    private GameLevel gameLevel;
     private Counter score;
 
-    public ScoreTrackingListener(Game game, Counter score) {
-        this.game=game;
+    public ScoreTrackingListener(GameLevel gameLevel, Counter score) {
+        this.gameLevel = gameLevel;
         this.score=score;
     }
 

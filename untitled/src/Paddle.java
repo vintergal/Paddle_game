@@ -1,20 +1,19 @@
 import biuoop.DrawSurface;
-import biuoop.GUI;
+import biuoop.KeyboardSensor;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Paddle implements Sprite, Collidable {
     private biuoop.KeyboardSensor keyboard;
     private Rectangle rectangle;
     private int[] parts_changes;
     private int part_width;
-    public Paddle(int startX,int startY,int width, int height,GUI gui){
-        this(new Point(startX,startY),width,height,gui);
+    public Paddle(int startX,int startY,int width, int height,KeyboardSensor ks){
+        this(new Point(startX,startY),width,height,ks);
     }
 
-    public Paddle(Point start, int width, int height, GUI gui){
-        this.keyboard=gui.getKeyboardSensor();
+    public Paddle(Point start, int width, int height, KeyboardSensor ks){
+        this.keyboard=ks;
         this.rectangle= new Rectangle(start,width,height);
         this.parts_changes= new int[]{210 , 240 , -1, 300 , 330 };
         this.part_width=width/parts_changes.length;
@@ -25,7 +24,7 @@ public class Paddle implements Sprite, Collidable {
 
         Point newStart=velocity.applyToPoint(this.rectangle.getUpperLeft());
 
-        if (newStart.getX()>=Game.BOUNDS_THICK){
+        if (newStart.getX()>= GameLevel.BOUNDS_THICK){
             this.rectangle=new Rectangle(newStart,rectangle.getWidth(),rectangle.getHeight());
         }
 
@@ -35,7 +34,7 @@ public class Paddle implements Sprite, Collidable {
 
         Point newStart=velocity.applyToPoint(this.rectangle.getUpperLeft());
 
-        if (newStart.getX()+this.rectangle.getWidth()<=(Game.WIDTH- Game.BOUNDS_THICK)){
+        if (newStart.getX()+this.rectangle.getWidth()<=(GameLevel.WIDTH- GameLevel.BOUNDS_THICK)){
             this.rectangle=new Rectangle(newStart,rectangle.getWidth(),rectangle.getHeight());
         }}
 
@@ -90,7 +89,7 @@ public class Paddle implements Sprite, Collidable {
     }
 
     // Add this paddle to the game.
-    public void addToGame(Game g) {
+    public void addToGame(GameLevel g) {
         g.addCollidable(this);
         g.addSprite(this);
 
